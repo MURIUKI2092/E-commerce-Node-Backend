@@ -58,7 +58,8 @@ router.post("/login",async(req,res)=>{
       id:user._id,
       isAdmin:user.isAdmin
 
-    },process.env.jwt_key)
+    },process.env.jwt_key,
+    {expiresIn:"3d"})
 
     const {password ,...others}= user._doc;
     res.status(200).json({...others,accessToken} )
