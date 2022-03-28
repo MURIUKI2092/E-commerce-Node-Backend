@@ -40,7 +40,7 @@ router.get("/find/:id",verifyTokenAndAdmin,async(req,res)=>{
       .id)
       //destructuring the user details and removing the password
       // and return it in a doc form displaying other details beside password.
-      const {password ,...others}=user._doc
+      const {password ,...others}=person._doc
       res.status(200).json(person)
   }catch (err){
     res.status(500).json(err)
@@ -49,13 +49,49 @@ router.get("/find/:id",verifyTokenAndAdmin,async(req,res)=>{
 });
  // get all users
  router.get("/",verifyTokenAndAdmin,async(req,res)=>{
+   const  query = req.query.new
    try{
-     const users= await user.find();
+     const users=query ? await user.find().sort({_id:-1}).limit(5): 
+     await user.find();
      res.status(200).json(users);
    }catch(err){
      res.status(500).json(err)
    };
  });
+
+ // get user stats in one year
+
+ router.get("/stats",verifyTokenAndAdmin,async(req,res)=>{
+   // todays date
+   const date= new Date();
+   // one year ago's date
+
+   const lastYear = new Date(date.setFullYear(date.getFullYear()-1));
+
+   try{
+     //fetches users data in full
+     const data = await user.aggregate([
+       {$match:{createdAt:{$gte:lastYear}}},
+       {
+         // take month number
+         $project :{
+           month:{$month:"$createdAt"}
+         },
+       },
+       {
+         $group:{
+           _id:"$month",
+           total:{$sum:1}
+
+         }
+       }
+     ]);
+     res.status(200).json(data)
+
+   }catch(err){
+     res.status(500).json(err);
+   }
+ })
 
 
 module.exports=router
