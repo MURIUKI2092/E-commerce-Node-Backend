@@ -1,7 +1,7 @@
 const Product = require("../models/Product");
 const  { verifyToken,verifyTokenAndAuthorization
   , verifyTokenAndAdmin } = require('./tokenVerification');
-const router = require("./user");
+  const router = require('express').Router();
 
   //Create a product
   // done only by the admin
