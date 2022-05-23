@@ -1,5 +1,6 @@
 const user = require('../models/user');
-const { verifyToken,verifyTokenAndAuthorization, verifyTokenAndAdmin } = require('./tokenVerification');
+const { verifyToken,verifyTokenAndAuthorization
+  , verifyTokenAndAdmin } = require('./tokenVerification');
 
 const router = require('express').Router();
 // the added user  details are stored in the database
